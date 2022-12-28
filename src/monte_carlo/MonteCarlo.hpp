@@ -9,17 +9,21 @@
 template<typename Ty>
 concept numeric = std::is_arithmetic_v<Ty>;
 
-template<typename Fn, typename RetTy, typename BoundTy, typename... Args>
-concept callback = requires(Fn f, Args... args) {
-                       { f(args...) } -> std::same_as<RetTy>;
+template<typename Fn, typename RetTy, typename BoundTy, std::size_t VarCount>
+concept callback = requires(Fn f, const std::array<BoundTy, VarCount>& v) {
+                       { f(v) } -> std::same_as<RetTy>;
                    };
 
 class MonteCarlo {
 private:
-    std::mt19937_64 rand_engine{};
+    std::mt19937_64 rand_engine;
 
 public:
-    MonteCarlo() = default;
+    MonteCarlo() {
+        std::random_device r;
+        std::seed_seq seed{r(), r()};
+        rand_engine = std::mt19937_64{seed};
+    }
 
     // copy ctor and assignment deleted
     MonteCarlo(const MonteCarlo& other) = delete;
@@ -29,9 +33,9 @@ public:
     MonteCarlo(MonteCarlo&& other) = default;
     auto operator=(MonteCarlo&& rhs) -> MonteCarlo& = default;
 
-    // this could technically be used with just doubles as the random variable
+    // callback could have been a std::function, but I did not want to deal with the overhead of that.
     template<typename RetTy = double, numeric BoundTy, std::size_t VarCount>
-    [[nodiscard("dont discard this result bruv")]] auto
+    [[nodiscard]] auto
     runSimulation(BoundTy lower_bound, BoundTy upper_bound,
                   std::size_t iterations,
                   RetTy (*func)(const std::array<BoundTy, VarCount>&))

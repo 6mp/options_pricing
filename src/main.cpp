@@ -5,6 +5,7 @@
 #include <numbers>
 #include <numeric>
 
+/*
 template<typename Ty>
 auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
     MonteCarlo simulator{};
@@ -21,6 +22,7 @@ auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
     std::cout << "expected integral value after " << iterations
               << " iterations is " << expected_val << "\n";
 }
+*/
 
 auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
 
@@ -29,16 +31,16 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
     });*/
 
     MonteCarlo simulator{};
-    constexpr auto iterations{10000000};
+    constexpr auto iterations{10000};
     constexpr auto lower_bound{0.0}, upper_bound{1.0};
 
-    auto function = [](const std::array<double, 1>& x) {
-        return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
-    };
 
     std::vector<double> runs =
-            simulator.runSimulation(lower_bound, upper_bound, iterations,
-                                   +function);
+            simulator.runSimulation(
+                    lower_bound, upper_bound, iterations,
+                    +[](const std::array<double, 1>& x) {
+                        return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
+                    });
 
     double count = static_cast<double>(runs.size());
     double avg = std::reduce(runs.begin(), runs.end()) / count;

@@ -10,5 +10,4 @@ file(GLOB_RECURSE SOURCES
     src/*.cpp)
 list(REMOVE_ITEM SOURCES "src/main.cpp")
 
-
 add_executable(options_pricing ${SOURCES} "src/main.cpp")
