@@ -1,25 +1,18 @@
 #pragma once
 
+#include <array>
 #include <concepts>
+#include <functional>
 #include <random>
 #include <type_traits>
 
 template <typename Ty>
 concept numeric = std::is_arithmetic_v<Ty>;
 
-// requires that function is callable with current iteration and randomly
-// generated variable and then returns RetTy which by default is a double
-template <typename Fn, typename RetTy, typename BoundTy>
-concept callback_with_iteration = requires(Fn f) {
-                                    {
-                                      f(std::size_t{}, BoundTy{})
-                                      } -> std::same_as<RetTy>;
-                                  };
-
-template <typename Fn, typename RetTy, typename BoundTy>
-concept callback_one_arg = requires(Fn f) {
-                             { f(BoundTy{}) } -> std::same_as<RetTy>;
-                           };
+template <typename Fn, typename RetTy, typename BoundTy, typename... Args>
+concept callback = requires(Fn f, Args... args) {
+                     { f(args...) } -> std::same_as<RetTy>;
+                   };
 
 class MonteCarlo {
 private:
@@ -37,11 +30,11 @@ public:
   auto operator=(MonteCarlo &&rhs) -> MonteCarlo & = default;
 
   // this could techincally be used with just doubles as the random variable
-  template <typename RetTy = double, numeric BoundTy>
+  template <typename RetTy = double, numeric BoundTy, std::size_t VarCount>
   [[nodiscard("dont discard this result bruv")]] auto
   runSimulation(BoundTy lower_bound, BoundTy upper_bound,
                 std::size_t iterations,
-                callback_one_arg<RetTy, BoundTy> auto func)
+                std::function<RetTy(std::array<BoundTy, VarCount> &)> &&func)
       -> std::vector<RetTy> {
 
     // pre allocate vector
@@ -53,14 +46,19 @@ public:
       std::uniform_real_distribution<BoundTy> dist{lower_bound, upper_bound};
 
       for (std::size_t i{}; i < iterations; i++) {
-        output.emplace_back(func(dist(rand_engine)));
+        std::array<BoundTy, VarCount> in{};
+        for (int i = 0; i < VarCount; i++) {
+          in[i] = dist(rand_engine);
+        }
+        output.emplace_back(std::forward<decltype(func)>(func)(in));
       }
     } else if constexpr (std::is_integral_v<BoundTy>) {
 
       std::uniform_int_distribution<BoundTy> dist{lower_bound, upper_bound};
 
       for (std::size_t i{}; i < iterations; i++) {
-        output.emplace_back(func(dist(rand_engine)));
+        output.emplace_back(
+            std::forward<decltype(func)>(func)(dist(rand_engine)));
       }
     } else {
       static_assert(
