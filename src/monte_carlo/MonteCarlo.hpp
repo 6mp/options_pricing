@@ -9,20 +9,20 @@
 template<typename Ty>
 concept numeric = std::is_arithmetic_v<Ty>;
 
-template<typename Fn, typename RetTy, typename BoundTy, std::size_t VarCount>
+/* template<typename Fn, typename RetTy, typename BoundTy, std::size_t VarCount>
 concept callback = requires(Fn f, const std::array<BoundTy, VarCount>& v) {
                        { f(v) } -> std::same_as<RetTy>;
-                   };
+                   }; */
 
 class MonteCarlo {
 private:
-    std::mt19937_64 rand_engine;
+    std::mt19937_64 m_randEngine;
 
 public:
     MonteCarlo() {
         std::random_device r;
         std::seed_seq seed{r(), r()};
-        rand_engine = std::mt19937_64{seed};
+        m_randEngine = std::mt19937_64{seed};
     }
 
     // copy ctor and assignment deleted
@@ -51,7 +51,7 @@ public:
             std::array<BoundTy, VarCount> in{};
             for (std::size_t cur_iter{}; cur_iter < iterations; cur_iter++) {
                 for (int cur_var = 0; cur_var < VarCount; cur_var++) {
-                    in[cur_var] = dist(rand_engine);
+                    in[cur_var] = dist(m_randEngine);
                 }
                 output.emplace_back(func(in));
             }
@@ -61,7 +61,7 @@ public:
             std::array<BoundTy, VarCount> in{};
             for (std::size_t cur_iter{}; cur_iter < iterations; cur_iter++) {
                 for (int cur_var = 0; cur_var < VarCount; cur_var++) {
-                    in[cur_var] = dist(rand_engine);
+                    in[cur_var] = dist(m_randEngine);
                 }
                 output.emplace_back(func(in));
             }

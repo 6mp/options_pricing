@@ -31,7 +31,7 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
     });*/
 
     MonteCarlo simulator{};
-    constexpr auto iterations{10000};
+    constexpr auto iterations{100000};
     constexpr auto lower_bound{0.0}, upper_bound{1.0};
 
 
