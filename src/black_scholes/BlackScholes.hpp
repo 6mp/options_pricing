@@ -5,7 +5,6 @@ enum EBSType {
     EUROPUT
 };
 
-template<EBSType OptionTy>
 class BlackScholes {
     double m_strike{};
     double m_spot{};
@@ -20,10 +19,8 @@ class BlackScholes {
         m_timeToExpiry(time_to_expriy),
         m_riskFreeRate(risk_free_rate) {}
 
-    auto calculatePrice() -> double {
-
-    }    
-
+    template<EBSType OptionTy>
+    auto calculatePrice(std::size_t runs) -> double;
 };
 
 // time to payoff is time in days / 365
