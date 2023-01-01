@@ -9,11 +9,6 @@
 template<typename Ty>
 concept numeric = std::is_arithmetic_v<Ty>;
 
-/* template<typename Fn, typename RetTy, typename BoundTy, std::size_t VarCount>
-concept callback = requires(Fn f, const std::array<BoundTy, VarCount>& v) {
-                       { f(v) } -> std::same_as<RetTy>;
-                   }; */
-
 class MonteCarlo {
 private:
     std::mt19937_64 m_randEngine;
@@ -33,7 +28,14 @@ public:
     MonteCarlo(MonteCarlo&& other) = default;
     auto operator=(MonteCarlo&& rhs) -> MonteCarlo& = default;
 
-    // callback could have been a std::function, but I did not want to deal with the overhead of that.
+    /// \tparam RetTy Return type of callback function
+    /// \tparam BoundTy Type of randomly generated variable
+    /// \tparam VarCount Number of random variables which will be passed to callback function through a const std::array reference
+    /// \param lower_bound Lower bound for generated variables
+    /// \param upper_bound Upper bound for generated variables
+    /// \param iterations Number of iterations to run
+    /// \param func Callback function which will be supplied with random variables and returns some value which is the collected in a std::vector
+    /// \return collection of callbacks results
     template<typename RetTy = double, numeric BoundTy, std::size_t VarCount>
     [[nodiscard]] auto
     runSimulation(BoundTy lower_bound, BoundTy upper_bound,

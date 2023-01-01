@@ -5,6 +5,9 @@
 #include <numbers>
 #include <numeric>
 
+#include "black_scholes/BlackScholes.hpp"
+
+
 /*
 template<typename Ty>
 auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
@@ -48,6 +51,7 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
 
     std::cout << "expected integral value after " << iterations
               << " iterations is " << expected_val << "\n";
+
 
     return 0;
 }
