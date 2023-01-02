@@ -6,8 +6,14 @@
 #include <random>
 #include <type_traits>
 
+// clang-format off
 template<typename Ty>
 concept numeric = std::is_arithmetic_v<Ty>;
+
+template<typename FunTy, typename RetTy, typename BoundTy, std::size_t VarCount>
+concept callback = std::invocable<FunTy, const std::array<BoundTy, VarCount>&> 
+                   && std::is_same_v<std::invoke_result_t<FunTy, const std::array<BoundTy, VarCount>&>, RetTy>;
+// clang-format on
 
 class MonteCarlo
 {
@@ -33,16 +39,16 @@ public:
     /// \tparam RetTy Return type of callback function
     /// \tparam BoundTy Type of randomly generated variable
     /// \tparam VarCount Number of random variables which will be passed to callback function through a const std::array
-    /// reference \param lower_bound Lower bound for generated variables \param upper_bound Upper bound for generated
-    /// variables \param iterations Number of iterations to run \param func Callback function which will be supplied
-    /// with random variables and returns some value which is the collected in a std::vector \return collection of
-    /// callbacks results
-    template<typename RetTy = double, numeric BoundTy, std::size_t VarCount>
+    /// reference
+    /// \param lower_bound Lower bound for generated variables \param upper_bound Upper bound for generated
+    /// variables
+    /// \param iterations Number of iterations to run \param func Callback function which will be supplied
+    /// with random variables and returns some value which is the collected in a std::vector
+    /// \return collection of callbacks results
+    template<std::size_t VarCount = 1, typename RetTy = double, numeric BoundTy>
     [[nodiscard]] auto runSimulation(
-        BoundTy lower_bound,
-        BoundTy upper_bound,
-        std::size_t iterations,
-        std::function<RetTy(const std::array<BoundTy, VarCount>&)>& func) -> std::vector<RetTy>
+        BoundTy lower_bound, BoundTy upper_bound, std::size_t iterations, callback<RetTy, BoundTy, VarCount> auto func)
+        -> std::vector<RetTy>
     {
 
         // RetTy (*func)(const std::array<BoundTy, VarCount>&)

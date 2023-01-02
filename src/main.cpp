@@ -7,7 +7,6 @@
 
 #include "options_implementation/Option.hpp"
 
-
 /*
 template<typename Ty>
 auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
@@ -27,35 +26,30 @@ auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
 }
 */
 
-auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
+auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
+{
 
     /*    integrate(0.0, 1.0, [](std::array<double, 1> &x) {
         return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
     });*/
 
-/*
     MonteCarlo simulator{};
     constexpr auto iterations{100000};
     constexpr auto lower_bound{0.0}, upper_bound{1.0};
 
-
-    std::vector<double> runs =
-            simulator.runSimulation(
-                    lower_bound, upper_bound, iterations,
-                    +[](const std::array<double, 1>& x) {
-                        return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
-                    });
+    std::vector<double> runs = simulator.runSimulation(
+        lower_bound,
+        upper_bound,
+        iterations,
+        +[](const std::array<double, 1>& x) { return std::cos(2 * std::numbers::pi * std::pow(x[0], 2)); });
 
     double count = static_cast<double>(runs.size());
     double avg = std::reduce(runs.begin(), runs.end()) / count;
     double expected_val = (upper_bound - lower_bound) * avg;
 
-    std::cout << "expected integral value after " << iterations
-              << " iterations is " << expected_val << "\n";
-*/
+    std::cout << "expected integral value after " << iterations << " iterations is " << expected_val << "\n";
 
-
-    Option<EOptionType::EUROCALL> call{100, 100, .2, 1.0, .05};
-    call.calculatePrice(10000000);
+    // Option<EOptionType::EUROCALL> call{100, 100, .2, 1.0, .05};
+    // call.calculatePrice(10000000);
     return 0;
 }

@@ -40,7 +40,7 @@ public:
 
     auto calculatePrice(int number_of_paths) -> double
     {
-        std::function<double(const std::array<double, 1>&)> get_price = [](const std::array<double, 1>& var)
+        auto get_price = [](const std::array<double, 1>& var)
         { return var[0]; };
 
         MonteCarlo simulator{};
