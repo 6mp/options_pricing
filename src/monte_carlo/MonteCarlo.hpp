@@ -40,9 +40,10 @@ public:
     [[nodiscard]] auto
     runSimulation(BoundTy lower_bound, BoundTy upper_bound,
                   std::size_t iterations,
-                  RetTy (*func)(const std::array<BoundTy, VarCount>&))
+                  std::function<RetTy(const std::array<BoundTy, VarCount>&)>& func)
             -> std::vector<RetTy> {
 
+        //RetTy (*func)(const std::array<BoundTy, VarCount>&)
         // pre allocate vector
         std::vector<RetTy> output{};
         output.reserve(iterations);

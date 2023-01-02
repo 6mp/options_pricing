@@ -5,7 +5,7 @@
 #include <numbers>
 #include <numeric>
 
-#include "black_scholes/BlackScholes.hpp"
+#include "options_implementation/Option.hpp"
 
 
 /*
@@ -33,6 +33,7 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
         return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
     });*/
 
+/*
     MonteCarlo simulator{};
     constexpr auto iterations{100000};
     constexpr auto lower_bound{0.0}, upper_bound{1.0};
@@ -51,7 +52,10 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int {
 
     std::cout << "expected integral value after " << iterations
               << " iterations is " << expected_val << "\n";
+*/
 
 
+    Option<EOptionType::EUROCALL> call{100, 100, .2, 1.0, .05};
+    call.calculatePrice(10000000);
     return 0;
 }
