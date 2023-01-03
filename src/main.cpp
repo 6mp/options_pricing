@@ -49,7 +49,13 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
 
     std::cout << "expected integral value after " << iterations << " iterations is " << expected_val << "\n";
 
-    // Option<EOptionType::EUROCALL> call{100, 100, .2, 1.0, .05};
-    // call.calculatePrice(10000000);
+    __builtin_dump_struct(&simulator, printf);
+
+    Option<EOptionType::EUROCALL> call{100, 100, .2, 1.0, .05};
+    call.calculatePrice(10000000);
+
+
+    __builtin_dump_struct(&call, printf);
+
     return 0;
 }

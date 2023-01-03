@@ -6,14 +6,17 @@
 #include <random>
 #include <type_traits>
 
+namespace
+{
 // clang-format off
-template<typename Ty>
-concept numeric = std::is_arithmetic_v<Ty>;
+    template<typename Ty>
+    concept numeric = std::is_arithmetic_v<Ty>;
 
-template<typename FunTy, typename RetTy, typename BoundTy, std::size_t VarCount>
-concept callback = std::invocable<FunTy, const std::array<BoundTy, VarCount>&> 
-                   && std::is_same_v<std::invoke_result_t<FunTy, const std::array<BoundTy, VarCount>&>, RetTy>;
+    template<typename FunTy, typename RetTy, typename BoundTy, std::size_t VarCount>
+    concept callback = std::invocable<FunTy, const std::array<BoundTy, VarCount>&> 
+                       && std::is_same_v<std::invoke_result_t<FunTy, const std::array<BoundTy, VarCount>&>, RetTy>;
 // clang-format on
+}    // namespace
 
 class MonteCarlo
 {
@@ -24,7 +27,7 @@ public:
     MonteCarlo()
     {
         std::random_device r;
-        std::seed_seq seed{r(), r()};
+        std::seed_seq seed{r(), r(), r()};
         m_randEngine = std::mt19937_64{seed};
     }
 
@@ -46,7 +49,7 @@ public:
     /// with random variables and returns some value which is the collected in a std::vector
     /// \return collection of callbacks results
     template<std::size_t VarCount = 1, typename RetTy = double, numeric BoundTy>
-    [[nodiscard]] auto runSimulation(
+    [[nodiscard("do not discard this result")]] auto runSimulation(
         BoundTy lower_bound, BoundTy upper_bound, std::size_t iterations, callback<RetTy, BoundTy, VarCount> auto func)
         -> std::vector<RetTy>
     {
