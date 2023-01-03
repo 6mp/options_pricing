@@ -15,41 +15,50 @@ class Option
     double m_volatility{};
     double m_timeToExpiry{};
     double m_riskFreeRate{};
+    std::size_t m_numberOfPaths{};
 
-    template<EOptionType OptionTy>
-    auto calculatePayoff() -> double
+    auto calculatePayoff(EOptionType option_type) -> double
     {
-        if constexpr (OptionTy == EOptionType::EUROCALL)
+        if (option_type == EOptionType::EUROCALL)
         {
             return std::max(m_spot - m_strike, 0.0);
         }
-        else if constexpr (OptionTy == EOptionType::EUROPUT)
+        else if (option_type == EOptionType::EUROPUT)
         {
             return std::max(m_strike - m_spot, 0.0);
+        }
+        else
+        {
+            return 0;
         }
     }
 
 public:
-    Option(double strike, double spot, double volatility, double time_to_expiry, double risk_free_rate)
+    Option(
+        double strike,
+        double spot,
+        double volatility,
+        double time_to_expiry,
+        double risk_free_rate,
+        std::size_t number_of_paths)
         : m_strike(strike)
         , m_spot(spot)
         , m_volatility(volatility)
         , m_timeToExpiry(time_to_expiry)
         , m_riskFreeRate(risk_free_rate)
+        , m_numberOfPaths(number_of_paths)
     {}
 
-
-    template<EOptionType OptionTy>
-    auto calculatePrice(int number_of_paths) -> double
+    auto calculatePrice(EOptionType option_type) -> double
     {
         MonteCarlo simulator{};
         static double last_price{};
 
         auto get_price = [](const std::array<double, 1>& var) -> double {
-              
+
         };
 
-        std::vector<double> results = simulator.runSimulation(0.0, 1.0, number_of_paths, get_price);
+        std::vector<double> results = simulator.runSimulation(0.0, 1.0, m_numberOfPaths, get_price);
         return 0;
     }
 };
