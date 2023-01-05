@@ -17,15 +17,15 @@ class Option
     double m_riskFreeRate{};
     std::size_t m_numberOfPaths{};
 
-    auto calculatePayoff(EOptionType option_type) -> double
+    auto calculatePayoff(EOptionType option_type, double spot) -> double
     {
         if (option_type == EOptionType::EUROCALL)
         {
-            return std::max(m_spot - m_strike, 0.0);
+            return std::max(spot - m_strike, 0.0);
         }
         else if (option_type == EOptionType::EUROPUT)
         {
-            return std::max(m_strike - m_spot, 0.0);
+            return std::max(m_strike - spot, 0.0);
         }
         else
         {
@@ -52,14 +52,18 @@ public:
     auto calculatePrice(EOptionType option_type) -> double
     {
         MonteCarlo simulator{};
-        static double last_price{};
+        static double curr_price{m_spot};
 
-        auto get_price = [](const std::array<double, 1>& var) -> double {
-
+        auto get_price = [this](const std::array<double, 1>& var) -> double
+        {
+            const double d1 = 0.0;
+            const double d2 = 0.0;
+            return var[0];
         };
 
         std::vector<double> results = simulator.runSimulation(0.0, 1.0, m_numberOfPaths, get_price);
-        return 0;
+
+        return std::reduce(results.begin(), results.end());
     }
 };
 

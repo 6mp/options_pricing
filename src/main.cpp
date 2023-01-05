@@ -51,8 +51,9 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
 
     __builtin_dump_struct(&simulator, printf);
 
-    Option call{100, 100, .2, 1.0, .05, 1000000};
-    call.calculatePrice(EOptionType::EUROCALL);
+    Option call{100, 100, .2, 1.0, .05, 10000};
+    auto price = call.calculatePrice(EOptionType::EUROCALL);
+    std::cout << price << "\n";
 
     __builtin_dump_struct(&call, printf);
 
