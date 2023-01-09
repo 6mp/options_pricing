@@ -1,7 +1,11 @@
 #pragma once
-#include <cstddef>
+#include <cstddef> 
+#include <numeric> // numeric
+#include <execution>
+
 
 #include "../monte_carlo/MonteCarlo.hpp"
+
 enum class EOptionType
 {
     EUROCALL,
@@ -17,7 +21,7 @@ class Option
     double m_riskFreeRate{};
     std::size_t m_numberOfPaths{};
 
-    auto calculatePayoff(EOptionType option_type, double spot) -> double
+    auto calculatePayoff(EOptionType option_type, double spot) const -> double
     {
         if (option_type == EOptionType::EUROCALL)
         {
@@ -49,21 +53,41 @@ public:
         , m_numberOfPaths(number_of_paths)
     {}
 
-    auto calculatePrice(EOptionType option_type) -> double
+    auto calculatePrice(EOptionType option_type) const -> double
     {
         MonteCarlo simulator{};
-        static double curr_price{m_spot};
+        //static double last_price{m_spot};
+        
+        static double S_cur = 0.0;    // Our current asset price ("spot")
+        static double S_adjust =
+            m_spot *
+            std::exp(
+                m_timeToExpiry *
+                (m_riskFreeRate - 0.5 * std::pow(m_volatility, 2)));    // The adjustment to the spot price
 
         auto get_price = [this](const std::array<double, 1>& var) -> double
         {
-            const double d1 = 0.0;
-            const double d2 = 0.0;
-            return var[0];
+            S_cur = S_adjust * std::exp(
+                                   sqrt(std::pow(m_volatility, 2) * m_timeToExpiry) *
+                                   var[0]);    // Adjust the spot price via the Brownian motion final distribution
+
+            return S_cur;
         };
 
-        std::vector<double> results = simulator.runSimulation(0.0, 1.0, m_numberOfPaths, get_price);
+        std::vector<double> terminal_prices = simulator.runSimulation(0.0, 1.0, m_numberOfPaths, get_price);
 
-        return std::reduce(results.begin(), results.end());
+        std::vector<double> payoffs{};
+        payoffs.resize(m_numberOfPaths);
+
+        std::ranges::transform(
+            terminal_prices,
+            payoffs.begin(),
+            [option_type, this](const auto& price) { return calculatePayoff(option_type, price); });
+
+
+        // Average the pay-off sum via the number of paths and then
+        // discount the risk-free rate from the price
+        return (std::reduce(payoffs.begin(), payoffs.end()) / static_cast<double>(m_numberOfPaths)) * std::exp(-m_riskFreeRate * m_timeToExpiry);
     }
 };
 
