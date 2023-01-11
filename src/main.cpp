@@ -5,7 +5,7 @@
 #include <numbers>
 #include <numeric>
 
-#include "options_implementation/Option.hpp"
+#include "options_implementation/EuropeanOption.hpp"
 
 /*
 template<typename Ty>
@@ -26,6 +26,7 @@ auto integrate(Ty lower_bound, Ty upper_bound, auto&& function) {
 }
 */
 
+
 auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
 {
 
@@ -33,6 +34,9 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
         return std::cos(2 * std::numbers::pi * std::pow(x[0], 2));
     });*/
 
+
+
+    /*
     MonteCarlo simulator{};
     constexpr auto iterations{100000};
     constexpr auto lower_bound{0.0}, upper_bound{1.0};
@@ -50,12 +54,30 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
     std::cout << "expected integral value after " << iterations << " iterations is " << expected_val << "\n";
 
     //__builtin_dump_struct(&simulator, printf);
+    */
 
-    Option call{100, 100, .2, 1.0, .05, 10000000};
-    auto price = call.calculatePrice(EOptionType::EUROCALL);
+    const EuropeanOption::Inputs input{
+        .strike = 100.0,
+        .spot = 100.0,
+        .volatility = .2,
+        .time_to_expiry = 1.0,
+        .risk_free_rate = .05,
+        .number_of_paths = 10000};
+
+
+
+    const EuropeanOption euro_opt{input};
+    auto price = euro_opt.calculateBSPrice(EOptionType::EUROCALL);
     std::cout << price << "\n";
 
-    //__builtin_dump_struct(&call, printf);
+    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
+    std::cout << price << "\n";
+
+    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
+    std::cout << price << "\n";
+
+    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
+    std::cout << price << "\n";
 
     return 0;
-}
+};
