@@ -1,8 +1,6 @@
 #pragma once
 #include <cstddef> 
 
-#include "../monte_carlo/MonteCarlo.hpp"
-
 enum class EOptionType
 {
     EUROCALL,
@@ -52,7 +50,7 @@ public:
         , m_numberOfPaths(number_of_paths)
     {}
 
-    EuropeanOption(const Inputs& inputs)
+    explicit(false) EuropeanOption(const Inputs& inputs)
         : m_strike(inputs.strike)
         , m_spot(inputs.spot)
         , m_volatility(inputs.volatility)
@@ -67,10 +65,6 @@ public:
      * \return Price of option
      */
     [[nodiscard]] auto calculateBSPrice(EOptionType option_type) const -> double;
-
-    [[nodiscard]] auto calculateBinomialPrice(EuropeanOption option_type) const -> double;
 };
-
-inline auto EuropeanOption::calculateBinomialPrice(EuropeanOption option_type) const -> double {}
 
 // time to payoff is time in days / 365

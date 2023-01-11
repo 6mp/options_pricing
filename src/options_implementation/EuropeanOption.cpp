@@ -1,5 +1,8 @@
-#include "EuropeanOption.hpp"
+#include <options_implementation/EuropeanOption.hpp>
+#include <monte_carlo/MonteCarlo.hpp>
+
 #include <numeric>
+
 
 auto EuropeanOption::calculatePayoff(EOptionType option_type, double spot) const -> double {
     if (option_type == EOptionType::EUROCALL)

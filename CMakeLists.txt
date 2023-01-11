@@ -11,3 +11,4 @@ file(GLOB_RECURSE SOURCES
 list(REMOVE_ITEM SOURCES "src/main.cpp")
 
 add_executable(options_pricing ${SOURCES} "src/main.cpp")
+target_include_directories(options_pricing PUBLIC "include")
