@@ -49,14 +49,14 @@ public:
      */
     template<std::size_t VarCount = 1, typename RetTy = double>
     [[nodiscard("do not discard this result")]] auto runSimulation(
-       std::size_t iterations, callback<RetTy, VarCount> auto func)
+       std::size_t iterations, const callback<RetTy, VarCount> auto& func)
         -> std::vector<RetTy>;
 };
 
 template<std::size_t VarCount, typename RetTy>
 auto MonteCarlo::runSimulation(
     std::size_t iterations,
-    callback<RetTy, VarCount> auto func) -> std::vector<RetTy> {
+    const callback<RetTy, VarCount> auto& func) -> std::vector<RetTy> {
 
     // pre allocate vector
     std::vector<RetTy> output{};

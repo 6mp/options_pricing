@@ -1,7 +1,7 @@
-#include "Option.hpp"
+#include "EuropeanOption.hpp"
 #include <numeric>
 
-auto Option::calculatePayoff(EOptionType option_type, double spot) const -> double {
+auto EuropeanOption::calculatePayoff(EOptionType option_type, double spot) const -> double {
     if (option_type == EOptionType::EUROCALL)
     {
         return std::max(spot - m_strike, 0.0);
@@ -17,19 +17,18 @@ auto Option::calculatePayoff(EOptionType option_type, double spot) const -> doub
 }
 
 
-auto Option::calculateBSPrice(EOptionType option_type) const -> double
+auto EuropeanOption::calculateBSPrice(EOptionType option_type) const -> double
 {
     MonteCarlo simulator{};
 
-    double s_adjust = m_spot * std::exp(m_timeToExpiry * (m_riskFreeRate - std::pow(m_volatility, 2) * .5));
-    double payoff_sum = 0.0;
+    const double s_adjust = m_spot * std::exp(m_timeToExpiry * (m_riskFreeRate - std::pow(m_volatility, 2) * .5));
 
-    auto prices = simulator.runSimulation(
+    const std::vector<double> prices = simulator.runSimulation(
         m_numberOfPaths,
-        [s_adjust, this](const auto& var)
+        [s_adjust, this](const std::array<double, 1>& var)
         { return s_adjust * std::exp(std::sqrt(std::pow(m_volatility, 2) * m_timeToExpiry) * var[0]); });
 
-    payoff_sum = std::accumulate(
+    const double payoff_sum = std::accumulate(
         prices.begin(),
         prices.end(),
         0.0,
