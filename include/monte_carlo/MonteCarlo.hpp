@@ -47,21 +47,32 @@ public:
     auto operator=(MonteCarlo&& rhs) -> MonteCarlo& = default;
 
     /**
-     * \brief
-     * \tparam VarCount Return type of callback function
-     * \tparam RetTy Number of random variables which will be passed to callback function through a const std::array
+     * \brief Function to run a monte carlo simulation and collect all the results into a vector
+     * \tparam VarCount Number of random variables which will be passed to callback function through a const std::array
+     * \tparam Distribution std::distribution type
+     * \tparam RetTy Return type of callback function
      * \param iterations Number of iterations to run
      * \param func Callback function which will be supplied with random variables and returns some value which is the
-     * collected in a std::vector \return collection of callbacks results
+     * collected in a std::vector
+     * \return collection of callbacks results
      */
     template<std::size_t VarCount = 1, typename Distribution = std::normal_distribution<double>, addable RetTy = double>
-    [[nodiscard("do not discard this result")]] auto
-        runSimulation(std::size_t iterations, const callback<RetTy, VarCount> auto& func) -> std::vector<RetTy>;
+    [[nodiscard]] auto runSimulation(std::size_t iterations, const callback<RetTy, VarCount> auto& func)
+        -> std::vector<RetTy>;
 
+    /**
+     * \brief Function to run a monte carlo simulation and sum all the results, used when each result is not needed
+     * \tparam VarCount Number of random variables which will be passed to callback function through a const std::array
+     * \tparam Distribution std::distribution type
+     * \tparam RetTy Return type of callback function
+     * \param iterations Number of iterations to run
+     * \param func Callback function which will be supplied with random variables and returns a value which is summed
+     * \return sum of callback results
+     */
     template<std::size_t VarCount = 1, typename Distribution = std::normal_distribution<double>, addable RetTy = double>
-    [[nodiscard("do not discard this result")]] auto
-        runSimulationSum(std::size_t iterations, const callback<RetTy, VarCount> auto& func) -> RetTy;
+    [[nodiscard]] auto runSimulationSum(std::size_t iterations, const callback<RetTy, VarCount> auto& func) -> RetTy;
 };
+
 
 template<std::size_t VarCount, typename Distribution, addable RetTy>
 auto MonteCarlo::runSimulation(

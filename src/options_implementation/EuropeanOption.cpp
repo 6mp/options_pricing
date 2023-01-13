@@ -5,11 +5,11 @@
 
 
 auto EuropeanOption::calculatePayoff(EOptionType option_type, double spot) const -> double {
-    if (option_type == EOptionType::EUROCALL)
+    if (option_type == EOptionType::CALL)
     {
         return std::max(spot - m_strike, 0.0);
     }
-    else if (option_type == EOptionType::EUROPUT)
+    else if (option_type == EOptionType::PUT)
     {
         return std::max(m_strike - spot, 0.0);
     }

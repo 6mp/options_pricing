@@ -1,4 +1,6 @@
 #include <iostream>
+#include <format>
+
 #include "options_implementation/EuropeanOption.hpp"
 
 
@@ -12,18 +14,13 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
         .risk_free_rate = .05,
         .number_of_paths = 100000};
 
+
     const EuropeanOption euro_opt{input};
-    auto price = euro_opt.calculateBSPrice(EOptionType::EUROCALL);
-    std::cout << price << "\n";
+    const auto call_price = euro_opt.calculateBSPrice(EuropeanOption::EOptionType::CALL);
+    std::cout << call_price << "\n";
 
-    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
-    std::cout << price << "\n";
-
-    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
-    std::cout << price << "\n";
-
-    price = euro_opt.calculateBSPrice(EOptionType::EUROPUT);
-    std::cout << price << "\n";
+    const auto put_price = euro_opt.calculateBSPrice(EuropeanOption::EOptionType::PUT);
+    std::cout << put_price << "\n";
 
     return 0;
 }

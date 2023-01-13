@@ -1,11 +1,7 @@
 #pragma once
 #include <cstddef> 
 
-enum class EOptionType
-{
-    EUROCALL,
-    EUROPUT
-};
+
 
 class EuropeanOption
 {
@@ -15,14 +11,6 @@ class EuropeanOption
     double m_timeToExpiry{};
     double m_riskFreeRate{};
     std::size_t m_numberOfPaths{};
-
-    /**
-     * \brief Calculate payoff of option given current spot price
-     * \param option_type Call or Put
-     * \param spot Current spot price
-     * \return payoff of option
-     */
-    [[nodiscard]] auto calculatePayoff(EOptionType option_type, double spot) const -> double;
 
 public:
     struct Inputs
@@ -34,6 +22,8 @@ public:
         double risk_free_rate{};
         std::size_t number_of_paths{};
     };
+
+    enum class EOptionType { CALL, PUT };
 
     EuropeanOption(
         double strike,
@@ -60,11 +50,20 @@ public:
     {}
 
     /**
-     * \brief Calculates price of option using black scholes formula
+     * \brief Calculates price of option using black-scholes formula
      * \param option_type Call or Put
      * \return Price of option
      */
     [[nodiscard]] auto calculateBSPrice(EOptionType option_type) const -> double;
+
+private:
+    /**
+     * \brief Calculate payoff of option given current spot price
+     * \param option_type Call or Put
+     * \param spot Current spot price
+     * \return payoff of option
+     */
+    [[nodiscard]] auto calculatePayoff(EOptionType option_type, double spot) const -> double;
 };
 
 // time to payoff is time in days / 365
