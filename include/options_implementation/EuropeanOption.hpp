@@ -1,7 +1,18 @@
 #pragma once
-#include <cstddef>
 
+#include <cstddef>
 #include <monte_carlo/MonteCarlo.hpp>
+#include <source_location>
+#include <string>
+
+class EuropeanOptionException : public std::runtime_error
+{
+public:
+    explicit(false) EuropeanOptionException(
+        const std::string& error_msg, const std::source_location& location = std::source_location::current())
+        : runtime_error{error_msg + " at " + location.file_name() + ":" + std::to_string(location.line())}
+    {}
+};
 
 class EuropeanOption
 {
@@ -97,7 +108,7 @@ auto EuropeanOption::calculateBSPrice(EOptionType option_type) const -> double
         m_numberOfPaths,
         [adjusted_spot, option_type, this](const std::array<double, 1>& var)
         {
-            // calculate the new spot price of the underlying asset
+            // calculate the new spot price of the underlying asset, var[0] is the random variable N(0,1)
             const auto new_spot =
                 adjusted_spot * std::exp(std::sqrt(std::pow(m_volatility, 2) * m_timeToExpiry) * var[0]);
 

@@ -38,12 +38,11 @@ Cpp11BracedListStyle: true
 EmptyLineBeforeAccessModifier: LogicalBlock
 IncludeBlocks: Preserve
 
-IndentCaseBlocks: false
-IndentCaseLabels: false
+IndentCaseBlocks: true
+IndentCaseLabels: true
 IndentWrappedFunctionNames: true
 IndentExternBlock: Indent
 IndentPPDirectives: AfterHash
-IndentRequires: true
 LambdaBodyIndentation: Signature
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: Inner

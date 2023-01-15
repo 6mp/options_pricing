@@ -5,7 +5,7 @@
 #include <random>
 #include <type_traits>
 
-namespace
+namespace concepts
 {
 // clang-format off
     template<typename Ty>
@@ -20,8 +20,8 @@ namespace
         a + b;
         a += b;
     };
-    // clang-format on
-}    // namespace
+// clang-format on
+}    // namespace concepts
 
 class MonteCarlo
 {
@@ -56,8 +56,11 @@ public:
      * collected in a std::vector
      * \return collection of callbacks results
      */
-    template<std::size_t VarCount = 1, typename Distribution = std::normal_distribution<double>, addable RetTy = double>
-    [[nodiscard]] auto runSimulation(std::size_t iterations, const callback<RetTy, VarCount> auto& func)
+    template<
+        std::size_t VarCount = 1,
+        typename Distribution = std::normal_distribution<double>,
+        concepts::addable RetTy = double>
+    [[nodiscard]] auto runSimulation(std::size_t iterations, const concepts::callback<RetTy, VarCount> auto& func)
         -> std::vector<RetTy>;
 
     /**
@@ -69,15 +72,18 @@ public:
      * \param func Callback function which will be supplied with random variables and returns a value which is summed
      * \return sum of callback results
      */
-    template<std::size_t VarCount = 1, typename Distribution = std::normal_distribution<double>, addable RetTy = double>
-    [[nodiscard]] auto runSimulationSum(std::size_t iterations, const callback<RetTy, VarCount> auto& func) -> RetTy;
+    template<
+        std::size_t VarCount = 1,
+        typename Distribution = std::normal_distribution<double>,
+        concepts::addable RetTy = double>
+    [[nodiscard]] auto runSimulationSum(std::size_t iterations, const concepts::callback<RetTy, VarCount> auto& func)
+        -> RetTy;
 };
 
-
-template<std::size_t VarCount, typename Distribution, addable RetTy>
-auto MonteCarlo::runSimulation(
-    std::size_t iterations,
-    const callback<RetTy, VarCount> auto& func) -> std::vector<RetTy> {
+template<std::size_t VarCount, typename Distribution, concepts::addable RetTy>
+auto MonteCarlo::runSimulation(std::size_t iterations, const concepts::callback<RetTy, VarCount> auto& func)
+    -> std::vector<RetTy>
+{
 
     // pre allocate vector
     std::vector<RetTy> output{};
@@ -102,8 +108,8 @@ auto MonteCarlo::runSimulation(
     return output;
 }
 
-template<std::size_t VarCount, typename Distribution, addable RetTy>
-auto MonteCarlo::runSimulationSum(std::size_t iterations, const callback<RetTy, VarCount> auto& func) -> RetTy
+template<std::size_t VarCount, typename Distribution, concepts::addable RetTy>
+auto MonteCarlo::runSimulationSum(std::size_t iterations, const concepts::callback<RetTy, VarCount> auto& func) -> RetTy
 {
     RetTy sum{};
     Distribution dist{};

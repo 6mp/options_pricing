@@ -17,6 +17,7 @@ auto main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) -> int
     using payoffTy = EuropeanOption::EPayoffType;
 
     const EuropeanOption euro_opt{input};
+
     const auto call_price = euro_opt.calculateBSPrice<payoffTy::DIGITAL>(optionTy::CALL);
     std::cout << call_price << "\n";
 
