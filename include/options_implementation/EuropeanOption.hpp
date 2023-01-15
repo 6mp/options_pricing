@@ -1,5 +1,5 @@
 #pragma once
-#include <cstddef> 
+#include <cstddef>
 
 #include <monte_carlo/MonteCarlo.hpp>
 
@@ -76,7 +76,6 @@ private:
      */
     [[nodiscard]] auto calculateVanillaPayoff(EOptionType option_type, double spot) const -> double;
 
-
     /**
      * \brief Calculate digital payoff of option given current spot price
      * \param option_type Call or Put
@@ -96,7 +95,7 @@ auto EuropeanOption::calculateBSPrice(EOptionType option_type) const -> double
 
     const double payoff_sum = simulator.runSimulationSum(
         m_numberOfPaths,
-        [adjusted_spot, this, option_type](const std::array<double, 1>& var)
+        [adjusted_spot, option_type, this](const std::array<double, 1>& var)
         {
             // calculate the new spot price of the underlying asset
             const auto new_spot =
