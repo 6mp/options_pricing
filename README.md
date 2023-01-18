@@ -17,4 +17,4 @@ make
 ## Acknowledgements
 Quantstart articles on Monte Carlo options pricing
 <br>
-Several Research Papers on Monte Carlo Simulations
+Several research papers on Monte Carlo simulations
